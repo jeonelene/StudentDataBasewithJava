@@ -1,0 +1,194 @@
+/*
+     * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt 
+     * to change this license
+ */
+package com.mycompany.gewrgoulas1;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.*;
+
+/**
+ *
+ * @author eleno
+ */
+public class Gewrgoulas1 {
+
+    public static void main(String[] args) {
+    // Establish a connection
+        try(Connection connection = DriverManager.getConnection
+                ("jdbc:mariadb://localhost:3306/askisi1_db", "christofidou", "password")) {
+    
+            // Print a success message
+            System.out.println("Connection successful!");
+
+            // Rest of your code for database operations
+    // PRINT ALL ITEMS
+            String query1 = "select * from students ;";
+            try(Statement print = connection.createStatement()) {
+                
+                //students is the table name
+                ResultSet rs1 = print.executeQuery(query1);
+                while (rs1.next()) {
+                    System.out.printf("|%3s|%-10s||%-10s||%-10s||%-10s|\n"
+                        ,rs1.getString(1),rs1.getString(2),rs1.getString(3),rs1.getString(4),rs1.getString(5));
+                }
+
+    // PRINT ITEMS BASED ON A SURNAME
+                //request username from user
+                Scanner sc1 = new Scanner(System.in);
+                System.out.print("Enter a surname to find info: ");
+                String reqsrnm = sc1.nextLine();
+
+                
+                String query2 = "select * from students where surname = ?;";
+                try(PreparedStatement search1 = connection.prepareStatement(query2)){
+                    
+                    search1.setString(1, reqsrnm);
+                    
+                    ResultSet rs2 = search1.executeQuery();
+
+                    if (!rs2.isBeforeFirst()) {
+                        System.out.println("No data found for the surname: " + reqsrnm);
+                    }
+
+                    while (rs2.next()) {
+                        System.out.printf("|%3s|%-10s||%-10s||%-10s||%-10s|\n"
+                            ,rs2.getString(1),rs2.getString(2),rs2.getString(3),rs2.getString(4),rs2.getString(5));
+                    } //student table has name, surname, dpt, semester and sum_passed columns
+                }
+    // PRINT ITEMS BASED ON A SEMESTER
+                //request semester from user
+                Scanner sc2 = new Scanner(System.in);
+                int reqSemester = -1; // Initializing with an invalid value
+
+                while (reqSemester < 0) {
+                    try {
+                        System.out.print("Enter a valid semester to find info: ");
+                        reqSemester = sc2.nextInt();
+
+                        if (reqSemester < 1 || reqSemester > 10) {
+                            System.out.println("Invalid semester. Semester must be between 1 and 10.");
+                            reqSemester = -1; // Reset to trigger the next iteration
+                        }
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input. Please enter a valid integer for the semester.");
+                        sc2.next(); // Clear the invalid input from the scanner
+                    }
+                }
+                
+                String query3 = "select * from students where semester = ?;";
+                try(PreparedStatement search2 = connection.prepareStatement(query3);){
+                    search2.setInt(1, reqSemester);
+                
+                    ResultSet rs3 = search2.executeQuery();
+
+                    if (!rs3.isBeforeFirst()) {
+                        System.out.println("No data found for the semester: " + reqSemester);
+                    }
+
+                    while (rs3.next()) {
+                        System.out.printf("|%3s|%-10s||%-10s||%-10s||%-10s|\n"
+                            ,rs3.getString(1),rs3.getString(2),rs3.getString(3),rs3.getString(4),rs3.getString(5));
+                    } //student table has name, surname, dpt, semester and sum_passed columns
+                }
+    // UPDATE AN ITEM BASED ON A SURNAME      
+                // request surname from user
+                Scanner sc4 = new Scanner(System.in);
+                System.out.print("Enter a surname to update number of passed lessons: ");
+                String reqsrnm2 = sc4.nextLine();
+                
+                // request new passed_sum from user
+                Scanner sc5 = new Scanner(System.in);
+                System.out.print("Enter new number of passed lessons for " + reqsrnm2 + ": ");
+                String new_passed_sum = sc5.nextLine();
+                
+                String query4 = "update students set passed_sum = ? where surname = ?;";
+                
+                try (PreparedStatement update = connection.prepareStatement(query4)){
+                    
+                    update.setString(1, new_passed_sum);
+                    update.setString(2, reqsrnm2);
+    
+                    int rowsAffected = update.executeUpdate();
+
+                    if (rowsAffected == 0) {
+                        System.out.println("No data found for the surname: " + reqsrnm2);
+                    } else {
+                        System.out.println("Update successful. Rows affected: " + rowsAffected);
+
+                        // Retrieve and print the updated data
+                        
+                        String selectQuery = "select * from students where surname = ?;";
+                        try(PreparedStatement selectUpdatedData = connection.prepareStatement(selectQuery)){
+                            selectUpdatedData.setString(1, reqsrnm2);
+                            
+                            ResultSet rs4 = selectUpdatedData.executeQuery();
+
+                            if (rs4.next()) {
+                                System.out.printf("|%3s|%-10s||%-10s||%-10s||%-10s|\n"
+                                    ,rs4.getString(1),rs4.getString(2),rs4.getString(3),rs4.getString(4),rs4.getString(5));
+                
+                            } else {
+                                System.out.println("Error retrieving updated data.");
+                            }
+                        }
+                    }
+                }
+                
+    // DELETE AN ITEM BASED ON A SURNAME      
+                // request surname from user
+                Scanner sc6 = new Scanner(System.in);
+                System.out.print("Enter a surname to delete the query: ");
+                String reqsrnm3 = sc6.nextLine();
+                
+                String query5 = "delete from students where surname = ?;";
+                
+                try(PreparedStatement delete = connection.prepareStatement(query5)){
+                    
+                    delete.setString(1, reqsrnm3);
+                    
+                    int rowsAffected = delete.executeUpdate();
+
+                    if (rowsAffected == 0) {
+                        System.out.println("No data found for the surname: " + reqsrnm3);
+                    } else {
+                        System.out.println("Update successful. Rows affected: " + rowsAffected);
+                    }
+                }
+//                
+//    // DELETE ALL ITEMS               
+//                Statement deleteAll = connection.createStatement();
+//                String query6 = "delete from students;";
+//                
+//                rowsAffected = delete.executeUpdate(query6);
+//
+//                if (rowsAffected == 0) {
+//                    System.out.println("Update unsuccessful.");
+//                } else {
+//                    System.out.println("Update successful. Rows affected: " + rowsAffected);
+//                }
+                sc1.close();
+                sc2.close();
+                sc4.close();
+                sc5.close();
+                sc6.close();                
+
+            } catch (SQLException e) {
+                for (Throwable ex : e) {
+                    System.err.println("Error occurred " + ex);
+                }
+                System.out.println("Error in fetching data");
+            }
+
+            
+        } catch (SQLException e) {
+            // Print an error message
+            System.err.println("Connection failed. Error: " + e.getMessage());
+        }
+    }
+}

@@ -1,0 +1,2 @@
+javac copyofGewrgoulas1.java
+java -cp /home/eleno/Desktop/mariadb-java-client-3.3.0.jar:. copyofGewrgoulas1
