@@ -43,7 +43,7 @@ public class Gewrgoulas1 {
                 } while (choice != 7);
             }
         } catch (SQLException e) {
-            System.err.println("ΑΠοτυχία σύνδεσης. Σφάλμα: " + e.getMessage());
+            System.err.println("Αποτυχία σύνδεσης. Σφάλμα: " + e.getMessage());
         } finally {
             
         }
