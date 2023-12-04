@@ -19,41 +19,29 @@ public class Gewrgoulas1 {
         try (Connection connection = DriverManager.getConnection
             ("jdbc:mariadb://localhost:3306/askisi1_db", "christofidou", "password")) {
 
-            System.out.println("ΕΠιτυχής σύνδεση!");
+            System.out.println("Επιτυχής σύνδεση!");
 
-            Scanner scanner = new Scanner(System.in);
-            int choice;
-
-            do {
-                printMenu();
-                System.out.print("Εισαγωγή επιλογής: ");
-                choice = scanner.nextInt();
-
-                switch (choice) {
-                    case 1:
-                        printAllItems(connection);
-                        break;
-                    case 2:
-                        printItemsBySurname(connection);
-                        break;
-                    case 3:
-                        printItemsBySemester(connection);
-                        break;
-                    case 4:
-                        updateItemBySurname(connection);
-                        break;
-                    case 5:
-                        deleteItemBySurname(connection);
-                        break;
-                    case 6:
-                        System.out.println("Έξοδος από το πρόγραμα. Αντίο!");
-                        break;
-                    default:
-                        System.out.println("Άκυρη επιλογή. Παρακαλώ εισάγετε έγκυρη επιλογή.");
-                }
+            try (Scanner scanner = new Scanner(System.in)) {
+                int choice;
                 
-            } while (choice != 6);
-            scanner.close();
+                do {
+                    printMenu();
+                    System.out.print("Εισαγωγή επιλογής: ");
+                    choice = scanner.nextInt();
+                    
+                    switch (choice) {
+                        case 1 -> printAllItems(connection);
+                        case 2 -> printItemsBySurname(connection);
+                        case 3 -> printItemsBySemester(connection);
+                        case 4 -> updateItemBySurname(connection);
+                        case 5 -> deleteItemBySurname(connection);
+                        case 6 -> deleteAllItems(connection);
+                        case 7 -> System.out.println("Έξοδος από το πρόγραμα. Αντίο!");
+                        default -> System.out.println("Άκυρη επιλογή. Παρακαλώ εισάγετε έγκυρη επιλογή.");
+                    }
+                    
+                } while (choice != 7);
+            }
         } catch (SQLException e) {
             System.err.println("ΑΠοτυχία σύνδεσης. Σφάλμα: " + e.getMessage());
         } finally {
@@ -69,7 +57,8 @@ public class Gewrgoulas1 {
         System.out.println("3. Εκτύπωση Στοιχείων ανά Εξάμηνο");
         System.out.println("4. Ενημέρωση Στοιχείου ανά Επώνυμο");
         System.out.println("5. Διαγραφή Στοιχείου ανά Επώνυμο");
-        System.out.println("6. Έξοδος");
+        System.out.println("6. Διαγραφή όλων των Στοιχείων");
+        System.out.println("7. Έξοδος");
     }
 
     private static void printAllItems(Connection connection) {
