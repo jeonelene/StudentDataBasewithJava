@@ -1,8 +1,8 @@
-# Gewrgoulas1 Java Program
+# StudentDataBase Java Program
 
 ## Overview
 
-This Java program, named Gewrgoulas1, is a console-based application for managing student data in a MariaDB database. It allows users to perform various operations such as viewing all students, retrieving students by surname, semester, updating information, and deleting entries.
+This Java program, named StudentDataBase, is a console-based application for managing student data in a MariaDB database. It allows users to perform various operations such as viewing all students, retrieving students by surname, semester, updating information, and deleting entries.
 
 ## Getting Started
 
